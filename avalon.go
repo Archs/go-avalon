@@ -63,6 +63,10 @@ func (v *ViewModel) Get(name string) *Val {
 // Skip add name into vm.$skipArray
 func (v *ViewModel) Skip(name string) {
 	skp := v.Object.Get("$skipArray")
+	if skp.IsNull() {
+		v.Object.Set("$skipArray", []string{name})
+		return
+	}
 	skp.SetIndex(skp.Length(), name)
 }
 
