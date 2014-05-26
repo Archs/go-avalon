@@ -18,7 +18,8 @@ type Avalon struct {
 }
 
 func New() *Avalon {
-	return &Avalon{js.Global.Get("avalon")}
+	obj := js.Global.Get("avalon")
+	return &Avalon{obj}
 }
 
 type ViewModel struct {
@@ -29,19 +30,51 @@ func NewVM(o js.Object) *ViewModel {
 	return &ViewModel{o}
 }
 
-func (v *ViewModel) Set(name string, val interface{}) *ViewModel {
+// Val defines helper functions for use in VmHandler
+type Val struct {
+	js.Object
+	vm   *ViewModel
+	Name string
+}
+
+// Set set the named value i in the avalon ViewModel
+func (v *ViewModel) Set(name string, val interface{}) *Val {
 	// array or slice
 	if isArray(val) {
 		v.setArray(name, val)
-		return v
+		return v.Get(name)
 	}
 	// other object
 	v.Object.Set(name, val)
+	return v.Get(name)
+}
+
+func (v *ViewModel) Func(name string, cb interface{}) *Val {
+	if reflect.TypeOf(cb).Kind() != reflect.Func {
+		panic("callback is not a valid function")
+	}
+	return v.Set(name, cb)
+}
+
+func (v *ViewModel) Get(name string) *Val {
+	return &Val{v.Object.Get(name), v, name}
+}
+
+// Update updates val in the underlying view model
+func (v *Val) Update(i interface{}) *Val {
+	v.vm.Set(v.Name, i)
 	return v
 }
 
-func (v *ViewModel) Get(name string) js.Object {
-	return v.Object.Get(name)
+// Push push i into name val in view model
+func (v *Val) Push(i interface{}) *Val {
+	v.Object.Call("push", i)
+	return v
+}
+
+func (v *Val) Pop() *Val {
+	v.Object.Call("pop")
+	return v
 }
 
 func isArray(i interface{}) bool {
@@ -59,15 +92,6 @@ func (v *ViewModel) setArray(name string, i interface{}) error {
 		v.Object.Get(name).SetIndex(idx, val.Index(idx).Interface())
 	}
 	return nil
-}
-
-// Push push i into name val in view model
-func (v *ViewModel) Push(name string, i interface{}) *ViewModel {
-	if !isArray(name) {
-		panic("not array")
-	}
-	v.Get(name).Call("push", i)
-	return v
 }
 
 // VmHandler defines the handler for view model

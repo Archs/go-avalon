@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"github.com/Archs/avalon"
 	"github.com/gopherjs/gopherjs/js"
+	"math/rand"
 	// "log"
 )
 
@@ -10,6 +12,22 @@ type A struct {
 	A string
 	B int
 	C float32
+}
+
+func randomA() A {
+	return A{
+		fmt.Sprintf("%x", rand.Int63n(1000)),
+		rand.Int(),
+		rand.Float32(),
+	}
+}
+
+func gen(n int) []A {
+	ret := []A{}
+	for i := 0; i < n; i++ {
+		ret = append(ret, randomA())
+	}
+	return ret
 }
 
 func main() {
@@ -24,36 +42,21 @@ func main() {
 		avalon.Log("require result")
 		avalon.Log(val)
 	}, "test")
-	// avalon.Define("test", func(vm js.Object) {
-	// 	array := []int{1, 2, 3, 4, 5, 6, 7, 8}
-	// 	vm.Set("a", "asdfasdf")
-	// 	vm.Set("array", avalon.Slice(array))
-	// 	vm.Set("click", func(v js.Object) {
-	// 		avalon.Log(v)
-	// 		avalon.Log(vm.Get("array"))
-	// 		vm.Get("array").Call("push", 1)
-	// 	})
-	// 	vm.Call("$watch", "a", func(val, oval string) {
-	// 		println(val, oval)
-	// 	})
-	// })
 	a := avalon.New()
+	array := gen(20)
+	avalon.Log(array)
 	a.Define("test", func(vm *avalon.ViewModel) {
-		array := []int{1, 2, 3, 4, 5, 6, 7, 8}
 		vm.Set("a", "asdfasdf")
-		// vm.Set("array", avalon.Slice(array))
 		vm.Set("array", array)
-		vm.Set("click", func(v js.Object) {
-			defer func() {
-				if e := recover(); e != nil {
-					a.Log(e)
-				}
-			}()
-			panic("click")
-			a.Log(v)
-			a.Log(vm.Get("array"))
-			vm.Push("array", 1)
+		vm.Set("$skipArray", []string{"go$val"})
+		vm.Func("del", func() {
+			vm.Get("array").Pop()
 		})
+		vm.Func("add", func() {
+			vm.Get("array").Push(randomA())
+		})
+		avalon.Log("vm.obj")
+		avalon.Log(vm.Object.Get("$skipArray"))
 	})
 
 	avalon.Scan()
