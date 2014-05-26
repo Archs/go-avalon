@@ -60,6 +60,17 @@ func (v *ViewModel) Get(name string) *Val {
 	return &Val{v.Object.Get(name), v, name}
 }
 
+// Skip add name into vm.$skipArray
+func (v *ViewModel) Skip(name string) {
+	skp := v.Object.Get("$skipArray")
+	skp.SetIndex(skp.Length(), name)
+}
+
+// Skip add name into vm.$skipArray
+func (v *ViewModel) Watch(name string, fn func(js.Object, js.Object)) {
+	v.Object.Call("$watch", name, fn)
+}
+
 // Update updates val in the underlying view model
 func (v *Val) Update(i interface{}) *Val {
 	v.vm.Set(v.Name, i)
@@ -86,11 +97,7 @@ func isArray(i interface{}) bool {
 }
 
 func (v *ViewModel) setArray(name string, i interface{}) error {
-	v.Object.Set(name, []int{})
-	val := reflect.ValueOf(i)
-	for idx := 0; idx < val.Len(); idx++ {
-		v.Object.Get(name).SetIndex(idx, val.Index(idx).Interface())
-	}
+	v.Object.Set(name, Slice(i))
 	return nil
 }
 
