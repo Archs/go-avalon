@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test for avalon</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+	<div ms-controller="test">
+		<span ms-text="c"></span>
+		<button ms-click="click">Click</button>
+		<button ms-click="add">Add</button>
+		<button ms-click="del">Del</button>
+		<input type="text" ms-duplex="text"/>	
+		<div>{{text|tf}}</div>
+		<div>{{text|ndate}}</div>
+		<ul>
+			<li ms-repeat="array">
+				 <button ms-click="$remove">Remove</button>
+				 <!-- {{el.A}} -> {{el.C}} -->
+				 {{el}}
+			</li>
+		</ul>
+	</div>
+
+	<div ms-controller="test2">
+		<button ms-click="click()">Click</button>
+<!-- 		<button ms-click="add">Add</button>
+		<button ms-click="del">Del</button>
+ -->		<ul>
+			<li ms-repeat="array">
+				 <button ms-click="$remove">Remove</button>
+				 <!-- {{el.A}} -> {{el.C}} -->
+				 {{el.A}}
+			</li>
+		</ul>
+	</div>
+
+	<script type="text/javascript" src="js/avalon.js"></script>
+	<script type="text/javascript" src="index.js"></script>
+	<script type="text/javascript">
+	console.log("data.array", data.array)
+	avalon.define('test2', function (vm) {
+		vm.array = data.array
+		vm.click = function(){
+			vm.array = ["a", "b", "aa", "a2", "aas", "a23a", "a23f"]
+		}
+	})
+	</script>
+</body>
+</html>
