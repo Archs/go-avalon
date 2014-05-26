@@ -49,8 +49,12 @@ func (v *ViewModel) Set(name string, val interface{}) *Val {
 	return v.Get(name)
 }
 
+func isFunc(i interface{}) bool {
+	return reflect.TypeOf(i).Kind() == reflect.Func
+}
+
 func (v *ViewModel) Func(name string, cb interface{}) *Val {
-	if reflect.TypeOf(cb).Kind() != reflect.Func {
+	if !isFunc(cb) {
 		panic("callback is not a valid function")
 	}
 	return v.Set(name, cb)
@@ -73,6 +77,30 @@ func (v *ViewModel) Skip(name string) {
 // Skip add name into vm.$skipArray
 func (v *ViewModel) Watch(name string, fn func(js.Object, js.Object)) {
 	v.Object.Call("$watch", name, fn)
+}
+
+func (v *ViewModel) Compute(name string, getter interface{}, setters ...interface{}) *Val {
+	var setter interface{} = nil
+	if !isFunc(getter) {
+		panic("getter must be a function")
+	}
+	if len(setters) >= 1 {
+		setter = setters[0]
+		if !isFunc(setter) {
+			panic("setter must be a function")
+		}
+	}
+	if setter == nil {
+		v.Object.Set(name, map[string]interface{}{
+			"get": getter,
+		})
+	} else {
+		v.Object.Set(name, map[string]interface{}{
+			"get": getter,
+			"set": setter,
+		})
+	}
+	return v.Get(name)
 }
 
 // Update updates val in the underlying view model
@@ -124,6 +152,20 @@ func (a *Avalon) Define(name string, h VmHandler) *ViewModel {
 
 func (a *Avalon) Log(val interface{}) {
 	a.Call("log", val)
+}
+
+func Filters(name string, fn interface{}) {
+	if !isFunc(fn) {
+		panic("filter must be a function")
+	}
+	js.Global.Get(AV).Get("filters").Set(name, fn)
+}
+
+func Fn(name string, fn interface{}) {
+	if !isFunc(fn) {
+		panic("filter must be a function")
+	}
+	js.Global.Get(AV).Get("fn").Set(name, fn)
 }
 
 // Define define view model
