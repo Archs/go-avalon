@@ -169,8 +169,8 @@ func Fn(name string, fn interface{}) {
 }
 
 // Define define view model
-func Define(name string, cb Callback) js.Object {
-	return js.Global.Get(AV).Call("define", name, cb)
+func Define(name string, cb Callback) *ViewModel {
+	return &ViewModel{js.Global.Get(AV).Call("define", name, cb)}
 }
 
 func Slice(obj interface{}, idxs ...int) js.Object {
