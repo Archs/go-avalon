@@ -20,13 +20,14 @@
 				 {{el}}
 			</li>
 		</ul>
+		<div id="dt">{{dt}}</div>
 	</div>
 
 	<div ms-controller="test2">
 		<button ms-click="click()">Click</button>
-<!-- 		<button ms-click="add">Add</button>
+		<button ms-click="add">Add</button>
 		<button ms-click="del">Del</button>
- -->		<ul>
+		<ul>
 			<li ms-repeat="array">
 				 <button ms-click="$remove">Remove</button>
 				 <!-- {{el.A}} -> {{el.C}} -->
@@ -39,10 +40,13 @@
 	<script type="text/javascript" src="index.js"></script>
 	<script type="text/javascript">
 	console.log("data.array", data.array)
+	avalon.$skipArray = ['go$val']
 	avalon.define('test2', function (vm) {
-		vm.array = data.array
+		vm.$skipArray = ['go$val']
+		// vm.array = data.array
+		avalon.log(vm)
 		vm.click = function(){
-			vm.array = ["a", "b", "aa", "a2", "aas", "a23a", "a23f"]
+			// vm.array = data.array
 		}
 	})
 	</script>

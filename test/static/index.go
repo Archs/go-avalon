@@ -2,12 +2,18 @@ package main
 
 import (
 	"fmt"
-	"github.com/Archs/avalon"
-	"github.com/gopherjs/gopherjs/js"
 	"math/rand"
 	"strings"
 	"time"
-	// "log"
+
+	"github.com/Archs/avalon"
+	"github.com/Archs/avalon/mmRequest"
+	"github.com/gopherjs/gopherjs/js"
+	"honnef.co/go/js/console"
+)
+
+var (
+	model *avalon.ViewModel
 )
 
 type A struct {
@@ -32,6 +38,18 @@ func gen(n int) []A {
 	return ret
 }
 
+func onClick(obj js.Object) {
+	mmRequest.Post("/"+model.Get("text").Str(), func(ret js.Object) {
+		avalon.Log(ret)
+		console.Dir(ret)
+		model.Get("dt").Update(ret)
+	}).Then(func() {
+		console.Log("post ok")
+	}).Otherwise(func() {
+		console.Log("post failed")
+	})
+}
+
 func main() {
 	avalon.Log("hello")
 	avalon.Log(A{"asdf", 16, 3.2})
@@ -50,21 +68,22 @@ func main() {
 		return t.Format(time.Kitchen)
 	})
 	// avalon.Scan()
-	avalon.Require(func(val js.Object) {
-		avalon.Log("require result")
-		avalon.Log(val)
-	}, "test")
-	a := avalon.New()
+	// avalon.Require(func(val js.Object) {
+	// 	avalon.Log("require result")
+	// 	avalon.Log(val)
+	// }, "test")
 	array := gen(20)
 	avalon.Log(array)
 	js.Global.Set("data", map[string]interface{}{
 		"array": array,
 	})
-	model := a.Define("test", func(vm *avalon.ViewModel) {
+
+	model = avalon.Define("test", func(vm *avalon.ViewModel) {
 		vm.Set("$skipArray", []string{"go$val"})
 		vm.Set("text", "asdfasdf")
-		// arr := vm.Set("array", []int{1, 2, 3, 4, 5, 6})
-		arr := vm.Set("array", array)
+		vm.Set("dt", "val")
+		arr := vm.Set("array", []int{1, 2, 3, 4, 5, 6})
+		// arr := vm.Set("array", array)
 		vm.Set("c", map[string]interface{}{
 			"get": func() int {
 				return arr.Length()
@@ -76,26 +95,21 @@ func main() {
 		// vm.Get("$skipArray").Push("go$val")
 		vm.Func("del", func() {
 			// vm.Get("array").Pop()
-			a.Log(vm.Get("c").Int())
-			a.Log("del called")
-			a.Log(vm.Get("e").Int())
+			avalon.Log(vm.Get("c").Int())
+			avalon.Log("del called")
+			avalon.Log(vm.Get("e").Int())
 			arr.Pop()
 		})
 		vm.Func("add", func() {
 			// vm.Get("array").Push(randomA())
-			a.Log(vm.Get("c").Int())
-			a.Log(vm.Get("e").Int())
+			avalon.Log(vm.Get("c").Int())
+			avalon.Log(vm.Get("e").Int())
 			arr.Push(randomA())
 			// arr.Push(1)
 		})
-		vm.Func("click", func(obj js.Object) {
-			avalon.Log(obj)
-			vm.Set("text", 11111111)
-			arr.Update(array)
-			avalon.Log(vm.Get("array"))
-		})
+		vm.Func("click", onClick)
 		vm.Watch("text", func(val, oval js.Object) {
-			println("watching", val, oval)
+			console.Log("watching", val, oval)
 		})
 		avalon.Log("vm.obj")
 		avalon.Log(vm.Object)
@@ -104,11 +118,12 @@ func main() {
 
 	avalon.Scan()
 	// time.AfterFunc(1000, func() {
-	// 	// model.Get("text").Update(time.Now().Format("2006-01-02 15:04:05"))
+	// 	model.Get("text").Update(time.Now().Format("2006-01-02 15:04:05"))
 	// 	println("afterfunc", model)
-	// })
-	js.Global.Call("setTimeout", func() {
-		// model.Get("text").Update(time.Now().Format("2006-01-02 15:04:05"))
-		model.Get("text").Update(rand.Int())
-	}, 1000)
+	// rand.Int()// })
+	println(time.Now().String(), model)
+	// js.Global.Call("setTimeout", func() {
+	// 	// model.Get("text").Update(time.Now().Format("2006-01-02 15:04:05"))
+	// 	model.Get("text").Update(time.Now().String())
+	// }, 1000)
 }
