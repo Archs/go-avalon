@@ -239,7 +239,11 @@ func Scan(ojbs ...interface{}) {
 
 // require( deps, callback)，一个全局方法，用于加载JS模块
 func Require(cb Callback, deps ...string) {
-	js.Global.Get(AV).Call("require", deps, cb)
+	if cb == nil {
+		js.Global.Get(AV).Call("require", deps)
+	} else {
+		js.Global.Get(AV).Call("require", deps, cb)
+	}
 }
 
 // css( node, name, value?)，如果只有两个参数，读取元素的某个样式，
