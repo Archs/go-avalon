@@ -11,33 +11,33 @@ const (
 
 // avalon.ajax 要求传入一个对象，
 // 对象要有url, type, success, dataType等属性，这与jQuery的设置保持一致
-func Ajax(options map[string]interface{}) Deferred {
-	return Deferred{js.Global.Get(AV).Call("ajax", options)}
+func Ajax(options map[string]interface{}) Promise {
+	return Promise{js.Global.Get(AV).Call("ajax", options)}
 }
 
 // avlaon.get( url [, data ] [, success(data, textStatus, XHR) ] [, dataType ] )
-func Get(i ...interface{}) Deferred {
-	return Deferred{js.Global.Get(AV).Call("get", i...)}
+func Get(i ...interface{}) Promise {
+	return Promise{js.Global.Get(AV).Call("get", i...)}
 }
 
 // avlaon.post( url [, data ] [, success(data, textStatus, XHR) ] [, dataType ] )
-func Post(i ...interface{}) Deferred {
-	return Deferred{js.Global.Get(AV).Call("post", i...)}
+func Post(i ...interface{}) Promise {
+	return Promise{js.Global.Get(AV).Call("post", i...)}
 }
 
 // avlaon.upload( url, form [,data] [,success(data, textStatus, XHR)] [, dataType])
-func Upload(i ...interface{}) Deferred {
-	return Deferred{js.Global.Get(AV).Call("upload", i...)}
+func Upload(i ...interface{}) Promise {
+	return Promise{js.Global.Get(AV).Call("upload", i...)}
 }
 
 // avalon.getJSON( url [, data ] [, success( data, textStatus, jqXHR ) ] )
-func GetJSON(i ...interface{}) Deferred {
-	return Deferred{js.Global.Get(AV).Call("getJSON", i...)}
+func GetJSON(i ...interface{}) Promise {
+	return Promise{js.Global.Get(AV).Call("getJSON", i...)}
 }
 
 // avalon.getScript( url [, success(script, textStatus, jqXHR) ] )
-func GetScript(i ...interface{}) Deferred {
-	return Deferred{js.Global.Get(AV).Call("getScript", i...)}
+func GetScript(i ...interface{}) Promise {
+	return Promise{js.Global.Get(AV).Call("getScript", i...)}
 }
 
 // avalon.param(obj) 将一个对象转换为字符串
@@ -61,11 +61,11 @@ func Serialize(form js.Object) string {
 }
 
 type Deferred struct {
-	js.Object
+	j js.Object
 }
 
 type Promise struct {
-	js.Object
+	j js.Object
 }
 
 func NewDeferred() Deferred {
@@ -73,42 +73,42 @@ func NewDeferred() Deferred {
 }
 
 func (d Deferred) Resolve(i ...interface{}) {
-	d.Call("resolve", i...)
+	d.j.Call("resolve", i...)
 }
 
 func (d Deferred) Reject(i ...interface{}) {
-	d.Call("reject", i...)
+	d.j.Call("reject", i...)
 }
 
 func (d Deferred) Notify(i interface{}) {
-	d.Call("notify", i)
+	d.j.Call("notify", i)
 }
 
 func (d Deferred) State() string {
-	return d.Call("state").Str()
+	return d.j.Call("state").Str()
 }
 
 func (d Deferred) Ditry() bool {
-	return d.Call("dirty").Bool()
+	return d.j.Call("dirty").Bool()
 }
 
 func (d Deferred) All(ps ...Promise) Promise {
-	return Promise{d.Call("all", ps)}
+	return Promise{d.j.Call("all", ps)}
 }
 
 func (d Deferred) Any(ps ...Promise) Promise {
-	return Promise{d.Call("any", ps)}
+	return Promise{d.j.Call("any", ps)}
 }
 
 func (p Promise) Then(fn ...interface{}) Promise {
-	return Promise{p.Object.Call("then", fn...)}
+	return Promise{p.j.Call("then", fn...)}
 }
 func (p Promise) Otherwise(fn interface{}) Promise {
-	return Promise{p.Object.Call("otherwise", fn)}
+	return Promise{p.j.Call("otherwise", fn)}
 }
 
 func (p Promise) Ensure(fn interface{}) Promise {
-	return Promise{p.Object.Call("ensure", fn)}
+	return Promise{p.j.Call("ensure", fn)}
 }
 
 func init() {
