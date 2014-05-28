@@ -41,11 +41,19 @@ func GetScript(i ...interface{}) Deferred {
 }
 
 // avalon.param(obj) 将一个对象转换为字符串
-func Param(params map[string]interface{}) {
-	js.Global.Get(AV).Call("param", params)
+func Param(params map[string]interface{}) string {
+	return js.Global.Get(AV).Call("param", params).Str()
 }
 
 // avalon.unparam(str) 将一个字符串转换为对象
+func Unparam(str string) map[string]interface{} {
+	nm := make(map[string]interface{})
+	j := js.Global.Get(AV).Call("unparam", str)
+	if j.IsUndefined() {
+		return nm
+	}
+	return j.Interface().(map[string]interface{})
+}
 
 // avalon.serializ(form) 将表单元素变字符串
 func Serialize(form js.Object) string {
