@@ -281,9 +281,15 @@ type Element struct {
 	js.Object
 }
 
-func NewElement(id string) Element {
-	obj := js.Global.Get("document").Call("getElementById", id)
+// NewElement get avalon.Element from js.Object
+func NewElement(obj js.Object) Element {
 	return Element{js.Global.Get(AV).Invoke(obj)}
+}
+
+// NewElementById get avalon.Element from id
+func NewElementById(id string) Element {
+	obj := js.Global.Get("document").Call("getElementById", id)
+	return NewElement(obj)
 }
 
 // hasClass(cls)，判定有没有此类名
