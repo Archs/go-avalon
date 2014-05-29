@@ -384,6 +384,11 @@
         var computedProperties = [] //计算属性
         var watchProperties = arguments[2] || {} //强制要监听的属性
         var skipArray = scope.$skipArray //要忽略监控的属性
+        var deleteArray = scope.$deleteArray //要强制删除的属性（不扫描）
+        if (Array.isArray(deleteArray)) {
+            // 添加到全局的skipProperties中去
+            skipProperties = skipProperties.concat(deleteArray)
+        }
         for (var i = 0, name; name = skipProperties[i++]; ) {
             delete scope[name]
             normalProperties[name] = true
@@ -425,7 +430,7 @@
         return vmodel
     }
 
-    var skipProperties = String("$id,$watch,$unwatch,$fire,$events,$model,$skipArray,$accessors," + subscribers).match(rword)
+    var skipProperties = String("$id,$watch,$unwatch,$fire,$events,$model,$skipArray,$deleteArray,$accessors," + subscribers).match(rword)
 
     var isEqual = Object.is || function(v1, v2) {
         if (v1 === 0 && v2 === 0) {
