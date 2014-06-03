@@ -18,9 +18,19 @@ in line `12088` of the geneated `val.js`, where `go$val` refers to the struct it
         this.C = C_ !== undefined ? C_ : 0;
     });
 
+When running the generated code, the browser would tell:
+
+    Uncaught RangeError: Maximum call stack size exceeded 
+
+and abort.
 
 The reason `this.go$val = this` would cause problem is that `avalon.js` would scan all the objects in the `ViewModel` it defines, except of those variables
-with prefix `$`, which is quite like `angular.js`. This problem can be bypassed if I change the `avalon.js` code to skip the scanning of object attribute `go$val`, but this in `avalon.js` can only be done through a hard coded javascript array of special variable names, which is not a good solution.
+with prefix `$`, which is quite like `angular.js`. This problem can be bypassed if I change the `avalon.js` code to skip the scanning of object attribute `go$val`, but this in `avalon.js` can only be done through the 
+modification of a hard coded javascript array(which is an internal variable) of special variable names to skip.
+
+I upload the example in github: http://github.com/Archs/go-avalon/test/goval_test
+
+Hope it would help.
 
     
 
