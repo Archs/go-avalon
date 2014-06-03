@@ -8,6 +8,7 @@
 	<div ms-controller="test">
 		<span ms-text="c"></span>
 		<button ms-click="click">Click</button>
+		<button ms-click="reload">Reload Data</button>
 		<button ms-click="add">Add</button>
 		<button ms-click="del">Del</button>
 		<input type="text" ms-duplex="text"/>	
@@ -23,29 +24,7 @@
 		<div id="dt">{{dt}}</div>
 	</div>
 
-	<div ms-controller="test2">
-		<button ms-click="click()">Click</button>
-		<ul>
-			<li ms-repeat="array">
-				 <button ms-click="$remove">Remove</button>
-				 <!-- {{el.A}} -> {{el.C}} -->
-				 {{el.A}}
-			</li>
-		</ul>
-	</div>
-
 	<script type="text/javascript" src="js/avalon.js"></script>
 	<script type="text/javascript" src="index.js"></script>
-	<script type="text/javascript">
-	console.log("data.array", data.array)
-	avalon.$skipArray = ['go$val']
-	avalon.define('test2', function (vm) {
-		avalon.log(vm)
-		vm.array = data.array
-		vm.click = function(){
-			console.log(vm.array)
-		}
-	})
-	</script>
 </body>
 </html>

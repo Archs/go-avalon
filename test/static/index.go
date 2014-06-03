@@ -22,6 +22,18 @@ type A struct {
 	C float32
 }
 
+func (a A) Print() {
+	console.Log("A.Print", a)
+}
+
+type B struct {
+	D string
+}
+
+func (a B) Print() {
+	console.Log("B.Print", a)
+}
+
 func randomA() A {
 	return A{
 		fmt.Sprintf("%x", rand.Int63n(1000)),
@@ -49,6 +61,18 @@ func onClick(obj js.Object) {
 		console.Log("post failed")
 	})
 }
+func onGetData(obj js.Object) {
+	mmRequest.Get("/data/10", func(data []B) {
+		console.Log("data:", data)
+		for _, v := range data {
+			v.Print()
+		}
+	}).Then(func() {
+		console.Log("get data ok")
+	}).Otherwise(func() {
+		console.Log("get data failed")
+	})
+}
 
 func main() {
 	avalon.Log("hello")
@@ -68,7 +92,7 @@ func main() {
 		return t.Format(time.Kitchen)
 	})
 	array := gen(5)
-	avalon.Log(array)
+	console.Log("array:", array)
 	js.Global.Set("data", map[string]interface{}{
 		"array": array,
 	})
@@ -102,6 +126,7 @@ func main() {
 			// arr.Push(1)
 		})
 		vm.Func("click", onClick)
+		vm.Func("reload", onGetData)
 		vm.Watch("text", func(val, oval js.Object) {
 			console.Log("watching", val, oval)
 		})
