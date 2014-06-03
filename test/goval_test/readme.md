@@ -1,15 +1,19 @@
-In fact this is a very specific example or need.
+
+Here is the details of the prolem I encounter before
 
 When I was doing the gopherjs bindings of [avalon.js][], I want to generate test data in gopherjs using a struct type:
 
-    type A struct {
-        A string
-        B int
-        C float32
-    }
+```go
+type A struct {
+    A string
+    B int
+    C float32
+}
+```
 
 in line `12088` of the geneated `val.js`, where `go$val` refers to the struct itself:
 
+```js
     A = go$pkg.A = go$newType(0, "Struct", "main.A", "A", "main", function(A_, B_, C_) {
         this.go$val = this; // it's this line that causes the problem
                             // if you comment it out, it will work
@@ -17,6 +21,7 @@ in line `12088` of the geneated `val.js`, where `go$val` refers to the struct it
         this.B = B_ !== undefined ? B_ : 0;
         this.C = C_ !== undefined ? C_ : 0;
     });
+```
 
 When running the generated code, the browser would tell:
 
@@ -28,12 +33,63 @@ The reason `this.go$val = this` would cause problem is that `avalon.js` would sc
 with prefix `$`, which is quite like `angular.js`. This problem can be bypassed if I change the `avalon.js` code to skip the scanning of object attribute `go$val`, but this in `avalon.js` can only be done through the 
 modification of a hard coded javascript array(which is an internal variable) of special variable names to skip.
 
-I upload the example in github: http://github.com/Archs/go-avalon/test/goval_test
+This is my gopherjs go code in `val.go`:
 
-Hope it would help.
+```go
+package main
 
-    
+import (
+    "fmt"
+    "math/rand"
 
+    "github.com/Archs/go-avalon"
+    "honnef.co/go/js/console"
+)
 
+type A struct {
+    A string
+    B int
+    C float32
+}
 
+func (a A) Print() {
+    console.Log("logging", a)
+}
+
+func randomA() A {
+    return A{
+        fmt.Sprintf("%x", rand.Int63n(1000)),
+        rand.Int(),
+        rand.Float32(),
+    }
+}
+
+func gen(n int) []A {
+    ret := []A{}
+    for i := 0; i < n; i++ {
+        ret = append(ret, randomA())
+    }
+    return ret
+}
+
+func main() {
+    array := gen(5)
+    avalon.Define("test", func(vm *avalon.ViewModel) {
+        arr := vm.Set("array", array)
+        vm.Func("del", func() {
+            arr.Pop()
+        })
+        vm.Func("add", func() {
+            arr.Push(randomA())
+        })
+        vm.Func("log", func(a A) {
+            a.Print()
+        })
+    })
+}
+```
+
+I put the whole example in [go-avalon][] github repos: http://github.com/Archs/go-avalon/test/goval_test
+
+[go-avalon]: https://github.com/Archs/go-avalon
 [avalon.js]: https://github.com/RubyLouvre/avalon
