@@ -240,7 +240,7 @@ func Scan(ojbs ...interface{}) {
 // require( deps, callback)，一个全局方法，用于加载JS模块
 func Require(cb Callback, deps ...string) {
 	if cb == nil {
-		js.Global.Get(AV).Call("require", deps)
+		js.Global.Get(AV).Call("require", deps, Noop)
 	} else {
 		js.Global.Get(AV).Call("require", deps, cb)
 	}

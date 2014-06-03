@@ -1,7 +1,7 @@
 package mmRequest
 
 import (
-	"github.com/Archs/avalon"
+	"github.com/Archs/go-avalon"
 	"github.com/gopherjs/gopherjs/js"
 )
 
