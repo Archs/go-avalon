@@ -1,0 +1,27 @@
+ <!DOCTYPE html>
+<html>
+<head>
+	<title>Test for avalon</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+	<div ms-controller="test">
+		<span ms-text="c"></span>
+		<button ms-click="click">Click</button>
+		<button ms-click="add">Add</button>
+		<button ms-click="del">Del</button>
+		<ul>
+			<li ms-repeat="array">
+				 <button ms-click="log(el)">Log</button>
+				 {{el.A}} ->
+				 {{el.A}} -> 
+				 {{el.A}}
+			</li>
+		</ul>
+		<div id="dt">{{dt}}</div>
+	</div>
+
+	<script type="text/javascript" src="../static/js/avalon.js"></script>
+	<script type="text/javascript" src="bug.js"></script>
+</body>
+</html>  
