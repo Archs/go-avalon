@@ -5,14 +5,13 @@ import (
 	"math/rand"
 
 	"github.com/Archs/go-avalon"
-	"github.com/gopherjs/gopherjs/js"
 	"honnef.co/go/js/console"
 )
 
 type A struct {
-	A string  `js:"a"`
-	B int     `js:"b"`
-	C float32 `js:"c"`
+	A string
+	B int
+	C float32
 }
 
 func (a A) Print() {
@@ -36,11 +35,7 @@ func gen(n int) []A {
 }
 
 func main() {
-	array := gen(5i)
-	avalon.Log(array)
-	js.Global.Set("data", map[string]interface{}{
-		"array": array,
-	})
+	array := gen(5)
 	avalon.Define("test", func(vm *avalon.ViewModel) {
 		arr := vm.Set("array", array)
 		vm.Func("del", func() {

@@ -11641,7 +11641,7 @@ go$packages["fmt"] = (function() {
 	return go$pkg;
 })();
 go$packages["github.com/Archs/go-avalon"] = (function() {
-	var go$pkg = {}, js = go$packages["github.com/gopherjs/gopherjs/js"], reflect = go$packages["reflect"], ViewModel, Val, NewVM, isFunc, isArray, Log, Slice, Define;
+	var go$pkg = {}, js = go$packages["github.com/gopherjs/gopherjs/js"], reflect = go$packages["reflect"], ViewModel, Val, NewVM, isFunc, isArray, Slice, Define;
 	ViewModel = go$pkg.ViewModel = go$newType(0, "Struct", "avalon.ViewModel", "ViewModel", "github.com/Archs/go-avalon", function(Object_) {
 		this.go$val = this;
 		this.Object = Object_ !== undefined ? Object_ : null;
@@ -11757,9 +11757,6 @@ go$packages["github.com/Archs/go-avalon"] = (function() {
 		return v.Object.pop();
 	};
 	Val.prototype.Pop = function() { return this.go$val.Pop(); };
-	Log = go$pkg.Log = function(val) {
-		go$global.avalon.log(go$externalize(val, go$emptyInterface));
-	};
 	Slice = go$pkg.Slice = function(obj, idxs) {
 		if (idxs.length === 0) {
 			return go$global.avalon.slice(go$externalize(obj, go$emptyInterface));
@@ -12086,9 +12083,9 @@ go$packages["math/rand"] = (function() {
 	return go$pkg;
 })();
 go$packages["main"] = (function() {
-	var go$pkg = {}, fmt = go$packages["fmt"], rand = go$packages["math/rand"], avalon = go$packages["github.com/Archs/go-avalon"], js = go$packages["github.com/gopherjs/gopherjs/js"], console = go$packages["honnef.co/go/js/console"], A, randomA, gen, main;
+	var go$pkg = {}, fmt = go$packages["fmt"], rand = go$packages["math/rand"], avalon = go$packages["github.com/Archs/go-avalon"], console = go$packages["honnef.co/go/js/console"], A, randomA, gen, main;
 	A = go$pkg.A = go$newType(0, "Struct", "main.A", "A", "main", function(A_, B_, C_) {
-		// this.go$val = this;
+		this.go$val = this;
 		this.A = A_ !== undefined ? A_ : "";
 		this.B = B_ !== undefined ? B_ : 0;
 		this.C = C_ !== undefined ? C_ : 0;
@@ -12113,10 +12110,8 @@ go$packages["main"] = (function() {
 		return ret;
 	};
 	main = go$pkg.main = function() {
-		var array, _map, _key;
-		array = gen(20);
-		avalon.Log(array);
-		go$global.data = go$externalize((_map = new Go$Map(), _key = "array", _map[_key] = { k: _key, v: array }, _map), (go$mapType(Go$String, go$emptyInterface)));
+		var array;
+		array = gen(5);
 		avalon.Define("test", (function(vm) {
 			var arr;
 			arr = vm.Set("array", array);
@@ -12135,7 +12130,7 @@ go$packages["main"] = (function() {
 	go$pkg.init = function() {
 		A.methods = [["Print", "Print", "", [], [], false, -1]];
 		(go$ptrType(A)).methods = [["Print", "Print", "", [], [], false, -1]];
-		A.init([["A", "A", "", Go$String, "js:\"a\""], ["B", "B", "", Go$Int, "js:\"b\""], ["C", "C", "", Go$Float32, "js:\"c\""]]);
+		A.init([["A", "A", "", Go$String, ""], ["B", "B", "", Go$Int, ""], ["C", "C", "", Go$Float32, ""]]);
 	}
 	return go$pkg;
 })();
@@ -12174,4 +12169,4 @@ go$packages["main"].init();
 go$packages["main"].main();
 
 })();
-//# sourceMappingURL=bug.js.map
+//# sourceMappingURL=val.js.map
