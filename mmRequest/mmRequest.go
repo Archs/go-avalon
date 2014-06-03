@@ -1,3 +1,5 @@
+// Package mmRequest is a binding of mmRequest.js which is a sub project of avalon.js.
+// This binding provides ajax requesting ablity for go-avalon.
 package mmRequest
 
 import (

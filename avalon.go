@@ -1,3 +1,5 @@
+// Package avalon is a `gophserjs` binding of avalon.js,
+// which is a MVVM javascript framework like `Angular.js`, but more simpler yet powerful.
 package avalon
 
 import (
