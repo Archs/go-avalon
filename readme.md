@@ -17,3 +17,5 @@ go-avalon是avalon.js的gopherjs绑定，如果前段的代码也可以用go编�
 的方式存在，在avalon.js中，这个形式的赋值会导致ViewModel模型扫描阶段的
 循环引用。目前该问题尚不能直接避免，需要修改`gopherjs`或者`avalon.js`
 的代码。
+的代码。
+

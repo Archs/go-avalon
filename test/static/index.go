@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Archs/avalon"
-	"github.com/Archs/avalon/mmRequest"
+	"github.com/Archs/go-avalon"
+	"github.com/Archs/go-avalon/mmRequest"
 	"github.com/gopherjs/gopherjs/js"
 	"honnef.co/go/js/console"
 )
@@ -67,12 +67,7 @@ func main() {
 		}
 		return t.Format(time.Kitchen)
 	})
-	// avalon.Scan()
-	// avalon.Require(func(val js.Object) {
-	// 	avalon.Log("require result")
-	// 	avalon.Log(val)
-	// }, "test")
-	array := gen(20)
+	array := gen(5)
 	avalon.Log(array)
 	js.Global.Set("data", map[string]interface{}{
 		"array": array,
@@ -82,8 +77,7 @@ func main() {
 		vm.Set("$skipArray", []string{"go$val"})
 		vm.Set("text", "asdfasdf")
 		vm.Set("dt", "val")
-		arr := vm.Set("array", []int{1, 2, 3, 4, 5, 6})
-		// arr := vm.Set("array", array)
+		arr := vm.Set("array", array)
 		vm.Set("c", map[string]interface{}{
 			"get": func() int {
 				return arr.Length()
@@ -121,7 +115,7 @@ func main() {
 	// 	model.Get("text").Update(time.Now().Format("2006-01-02 15:04:05"))
 	// 	println("afterfunc", model)
 	// rand.Int()// })
-	println(time.Now().String(), model)
+	console.Log(time.Now().String(), model)
 	// js.Global.Call("setTimeout", func() {
 	// 	// model.Get("text").Update(time.Now().Format("2006-01-02 15:04:05"))
 	// 	model.Get("text").Update(time.Now().String())
