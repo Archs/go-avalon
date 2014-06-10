@@ -51,7 +51,7 @@ func gen(n int) []A {
 }
 
 func onClick(obj js.Object) {
-	mmRequest.Post("/"+model.Get("text").Str(), func(ret js.Object) {
+	mmRequest.Post("/"+model.Get("text").Val().Str(), func(ret js.Object) {
 		avalon.Log(ret)
 		console.Dir(ret)
 		model.Get("dt").Update(ret)
@@ -99,12 +99,12 @@ func main() {
 
 	model = avalon.Define("test", func(vm *avalon.ViewModel) {
 		vm.Set("$skipArray", []string{"go$val"})
-		vm.Set("text", "asdfasdf")
+		text := vm.Set("text", "asdfasdf")
 		vm.Set("dt", "val")
 		arr := vm.Set("array", array)
 		vm.Set("c", map[string]interface{}{
 			"get": func() int {
-				return arr.Length()
+				return arr.Val().Length()
 			},
 		})
 		vm.Compute("e", func() int {
@@ -113,15 +113,15 @@ func main() {
 		// vm.Get("$skipArray").Push("go$val")
 		vm.Func("del", func() {
 			// vm.Get("array").Pop()
-			avalon.Log(vm.Get("c").Int())
+			avalon.Log(vm.Get("c").Val().Int())
 			avalon.Log("del called")
-			avalon.Log(vm.Get("e").Int())
+			avalon.Log(vm.Get("e").Val().Int())
 			arr.Pop()
 		})
 		vm.Func("add", func() {
 			// vm.Get("array").Push(randomA())
-			avalon.Log(vm.Get("c").Int())
-			avalon.Log(vm.Get("e").Int())
+			avalon.Log(vm.Get("c").Val().Int())
+			avalon.Log(vm.Get("e").Val().Int())
 			arr.Push(randomA())
 			// arr.Push(1)
 		})
@@ -129,6 +129,9 @@ func main() {
 		vm.Func("reload", onGetData)
 		vm.Watch("text", func(val, oval js.Object) {
 			console.Log("watching", val, oval)
+		})
+		vm.Func("outputText", func() {
+			avalon.Log(text.Val().Str())
 		})
 		avalon.Log("vm.obj")
 		avalon.Log(vm.Object)
