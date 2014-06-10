@@ -23,9 +23,9 @@ type ViewModel struct {
 
 // Val defines helper functions for use in VmHandler
 type Val struct {
-	js.Object
+	o    js.Object
 	vm   *ViewModel
-	Name string
+	name string
 }
 
 // VmHandler defines the handler for view model
@@ -117,20 +117,25 @@ func (v *ViewModel) Compute(name string, getter interface{}, setters ...interfac
 	return v.Get(name)
 }
 
+// Val gets updated data from ViewModel
+func (v *Val) Val() js.Object {
+	return v.vm.Object.Get(v.name)
+}
+
 // Update updates val in the underlying view model
 func (v *Val) Update(i interface{}) *Val {
-	v.vm.Set(v.Name, i)
+	v.vm.Set(v.name, i)
 	return v
 }
 
 // Push push i into name val in view model
 func (v *Val) Push(i interface{}) *Val {
-	v.Object.Call("push", i)
+	v.o.Call("push", i)
 	return v
 }
 
 func (v *Val) Pop() js.Object {
-	return v.Object.Call("pop")
+	return v.o.Call("pop")
 }
 
 func Filters(name string, fn interface{}) {
